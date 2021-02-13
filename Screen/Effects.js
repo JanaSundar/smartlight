@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../constants/Style';
 import { effects } from '../constants/effects_type';
+import axios from 'axios';
 
 const Effects = () => {
   const changeEffects = async (m) => {
