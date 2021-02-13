@@ -1,12 +1,36 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable, Image } from 'react-native';
+import { StyleSheet, Text, View, Pressable, ToastAndroid } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../constants/Style';
 import { instructions } from '../constants/effects_type';
 import { TextInput } from 'react-native-gesture-handler';
+import { useState } from 'react';
+import { validIpAddress } from '../Utils';
 
 const Settings = () => {
+  const [ip, setIp] = useState('');
+
+  const save = async () => {
+    const isIpValid = validIpAddress.test(ip);
+    if (!isIpValid) {
+      ToastAndroid.showWithGravity(
+        'Invalid IpAddress',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM
+      );
+    } else {
+      await AsyncStorage.setItem('@ip_addr', ip);
+      setIp('');
+      ToastAndroid.showWithGravity(
+        'IpAddress Saved',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM
+      );
+    }
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -28,9 +52,13 @@ const Settings = () => {
             placeholder="http://192.168.0.9"
             underlineColorAndroid="transparent"
             autoCapitalize="none"
+            value={ip}
+            onChangeText={(value) => {
+              setIp(value);
+            }}
           />
         </View>
-        <Pressable style={styles.button}>
+        <Pressable style={styles.button} onPress={save}>
           <Text style={styles.btntext}>Save</Text>
         </Pressable>
         <View style={styles.instruction}>

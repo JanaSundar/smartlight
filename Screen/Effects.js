@@ -5,6 +5,25 @@ import { colors } from '../constants/Style';
 import { effects } from '../constants/effects_type';
 
 const Effects = () => {
+  const changeEffects = async (m) => {
+    const url = await AsyncStorage.getItem('@ip_addr');
+    if (!url) {
+      ToastAndroid.showWithGravity(
+        'Url Not found',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM
+      );
+      return;
+    }
+
+    const { href } = new URL('/set', url);
+
+    await axios.get(href, {
+      params: {
+        m,
+      },
+    });
+  };
   return (
     <SafeAreaView
       style={{
@@ -15,7 +34,13 @@ const Effects = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Effects</Text>
         {effects.map((effect, ind) => (
-          <Pressable key={ind} style={styles.effect}>
+          <Pressable
+            key={ind}
+            style={styles.effect}
+            onPress={() => {
+              changeEffects(ind + 1);
+            }}
+          >
             <Text style={styles.text}>{effect}</Text>
           </Pressable>
         ))}
